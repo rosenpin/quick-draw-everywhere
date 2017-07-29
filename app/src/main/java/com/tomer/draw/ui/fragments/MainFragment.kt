@@ -67,9 +67,11 @@ class MainFragment : BaseFragment() {
 	override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val imageDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), context.getString(R.string.app_name))
-		val finalFiles: Array<File> = imageDir.listFiles({ _, filename -> filename.contains(".jpg") })
+		val finalFiles: Array<File>? = imageDir.listFiles({ _, filename -> filename.contains(".jpg") })
 		files = finalFiles
-		LoadDataTask(context, view).execute(*finalFiles)
+		if (finalFiles != null) {
+			LoadDataTask(context, view).execute(*finalFiles)
+		}
 		val serviceIntent = Intent(context, HolderService::class.java)
 		view?.findViewById<Switch>(R.id.enable)?.setOnCheckedChangeListener { _, isChecked ->
 			if (!isChecked)
