@@ -1,12 +1,10 @@
 package com.tomer.draw.ui.imagesgrid
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.squareup.picasso.Picasso
 import com.tomer.draw.R
 import java.io.File
 
@@ -28,7 +26,7 @@ class Item : AbstractItem<Item, Item.ViewHolder>() {
 		return this
 	}
 	
-	internal fun withFile(file: File?) : Item{
+	internal fun withFile(file: File?): Item {
 		this.file = file
 		return this
 	}

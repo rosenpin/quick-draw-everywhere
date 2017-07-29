@@ -1,11 +1,9 @@
 package com.tomer.draw.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.tomer.draw.R
-import com.tomer.draw.helpers.HolderService
 import com.tomer.draw.ui.fragments.BaseFragment
 import com.tomer.draw.ui.fragments.FragmentStateChangeListener
 import com.tomer.draw.ui.fragments.IntroFragment
@@ -13,7 +11,7 @@ import com.tomer.draw.ui.fragments.MainFragment
 
 
 class MainActivity : AppCompatActivity(), FragmentStateChangeListener {
-	override fun OnFinish(fragment: BaseFragment) {
+	override fun OnFragmentFinish(fragment: BaseFragment) {
 		when (fragment) {
 			is IntroFragment -> {
 				setScreen(mainFragment, "main")
@@ -24,9 +22,7 @@ class MainActivity : AppCompatActivity(), FragmentStateChangeListener {
 		}
 	}
 	
-	override fun OnCreate(fragment: BaseFragment) {
-	
-	}
+	override fun OnFragmentCreate(fragment: BaseFragment) {}
 	
 	private val introFragment = IntroFragment().withFragmentStateChangeListener(this)
 	private val mainFragment = MainFragment().withFragmentStateChangeListener(this)

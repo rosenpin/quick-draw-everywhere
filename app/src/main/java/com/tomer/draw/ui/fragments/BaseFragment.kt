@@ -16,10 +16,10 @@ abstract class BaseFragment : Fragment() {
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		fragmentStateChangeListener?.OnCreate(this)
+		fragmentStateChangeListener?.OnFragmentCreate(this)
 	}
 	
-	fun finish(){
-		fragmentStateChangeListener?.OnFinish(this)
+	fun finish() {
+		fragmentStateChangeListener?.OnFragmentFinish(this)
 	}
 }
