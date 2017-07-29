@@ -1,3 +1,9 @@
 <resources>
-    <string translatable="false" name="app_name">Quick Draw Everywhere</string>
+    <string name="app_name" translatable="false">Quick Draw Everywhere</string>
+    <string name="intro_request_perms">Please grant the following permissions for the app to function properly</string>
+    <string name="read_storage">Read Storage</string>
+    <string name="draw_over_other_apps">Draw Over Other Apps</string>
+    <string name="write_storage">Write Storage</string>
+    <string name="error_1_open_draw_over">Couldn\'t ask for draw over permission, you have to do it manually. Sorry.</string>
+    <string name="enable_the_service">Enable the service</string>
 </resources>

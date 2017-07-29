@@ -1,4 +1,6 @@
-package com.tomer.draw
+package com.tomer.draw.utils
+
+import com.tomer.draw.BuildConfig
 
 /**
  * A helper class to log events
@@ -23,13 +25,13 @@ object Log {
 		return if (c != null) c.simpleName else "com.tomer.alwayson"
 	}
 	
-	private fun log(flag: Log.LOG_FLAGS, var1: Any?, var2: Any?) {
+	private fun log(flag: LOG_FLAGS, var1: Any?, var2: Any?) {
 		if (!BuildConfig.DEBUG) return
 		if (var1 != null && var2 != null) {
 			when (flag) {
-				Log.LOG_FLAGS.ERROR -> android.util.Log.e(var1.toString(), var2.toString())
-				Log.LOG_FLAGS.DEBUG -> android.util.Log.d(var1.toString(), var2.toString())
-				Log.LOG_FLAGS.INFO -> android.util.Log.i(var1.toString(), var2.toString())
+				LOG_FLAGS.ERROR -> android.util.Log.e(var1.toString(), var2.toString())
+				LOG_FLAGS.DEBUG -> android.util.Log.d(var1.toString(), var2.toString())
+				LOG_FLAGS.INFO -> android.util.Log.i(var1.toString(), var2.toString())
 			}
 		}
 	}

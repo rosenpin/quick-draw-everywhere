@@ -1,4 +1,4 @@
-package com.tomer.draw
+package com.tomer.draw.ui.views
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -12,12 +12,21 @@ import android.os.Environment
 import android.os.Handler
 import android.support.design.widget.FloatingActionButton
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.FrameLayout
 import com.byox.drawview.enums.DrawingCapture
 import com.byox.drawview.enums.DrawingMode
 import com.byox.drawview.views.DrawView
+import com.tomer.draw.R
+import com.tomer.draw.helpers.AskPermissionActivity
+import com.tomer.draw.helpers.DisplaySize
+import com.tomer.draw.helpers.OnDrawingFinished
+import com.tomer.draw.helpers.WindowsManager
+import com.tomer.draw.utils.circularRevealHide
+import com.tomer.draw.utils.circularRevealShow
+import com.tomer.draw.utils.hasPermissions
 import kotlinx.android.synthetic.main.quick_draw_view.view.*
 import java.io.File
 import java.io.FileOutputStream
@@ -63,7 +72,6 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		drawView.backgroundColor = Color.WHITE
 		drawView.drawWidth = 8
 		drawView.drawColor = Color.GRAY
-		drawView.isZoomEnabled = true
 		drawView.cancel.setOnClickListener { drawView.restartDrawing(); onDrawingFinished?.OnDrawingClosed() }
 		drawView.undo.setOnClickListener { undo(drawView) }
 		drawView.save.setOnClickListener { save(drawView) }
@@ -81,13 +89,23 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		accessibleDrawView = drawView
 	}
 	
+	override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+		if (event.keyCode == KeyEvent.KEYCODE_VOLUME_UP || event
+				.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+			return super.dispatchKeyEvent(event)
+		}
+		removeFromWindow()
+		return super.dispatchKeyEvent(event)
+	}
+	
+	
 	fun undo(v: DrawView) {
 		v.undo()
 	}
 	
 	fun save(v: DrawView) {
 		val createCaptureResponse = v.createCapture(DrawingCapture.BITMAP)
-		if (!context.hasPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+		if (!context.hasPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 			context.startActivity(Intent(context, AskPermissionActivity::class.java))
 			return
 		}
@@ -98,9 +116,7 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		paintBitmapToBlack(bitmap)
 		var fileName = Calendar.getInstance().timeInMillis.toString()
 		try {
-			if (!fileName.contains(".")) {
-				fileName = "drawing-$fileName.jpg"
-			}
+			fileName = "drawing-$fileName.jpg"
 			val imageDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), context.getString(R.string.app_name))
 			imageDir.mkdirs()
 			val image = File(imageDir, fileName)

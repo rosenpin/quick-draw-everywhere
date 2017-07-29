@@ -1,4 +1,4 @@
-package com.tomer.draw
+package com.tomer.draw.helpers
 
 import android.content.Context
 import android.graphics.PixelFormat
@@ -7,6 +7,9 @@ import android.view.WindowManager
 import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
+import com.tomer.draw.ui.views.FloatingView
+import com.tomer.draw.ui.views.QuickDrawView
+import com.tomer.draw.utils.Log
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -20,8 +23,11 @@ internal class WindowsManager private constructor(context: Context) {
 	fun addView(view: FloatingView) {
 		val mParams = WindowManager.LayoutParams(view.origWidth(), view.origHeight(),
 				WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-				PixelFormat.TRANSLUCENT)
+				if (view is QuickDrawView)
+					WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+							WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+				else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+				PixelFormat.TRANSPARENT)
 		
 		mParams.gravity = view.gravity()
 		mParams.x = view.currentX
@@ -53,7 +59,7 @@ internal class WindowsManager private constructor(context: Context) {
 		spring.addListener(object : SimpleSpringListener() {
 			override fun onSpringUpdate(spring: Spring) {
 				Log.debug("spring value is ", spring.currentValue)
-				WindowsManager.getInstance((v as View).context).updateView(v, y = spring.currentValue.toInt())
+				getInstance((v as View).context).updateView(v, y = spring.currentValue.toInt())
 				if (y == 0 && y > lp.y) {
 					spring.destroy()
 					l?.onMoveFinished()

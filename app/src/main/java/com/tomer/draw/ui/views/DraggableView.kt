@@ -1,4 +1,4 @@
-package com.tomer.draw
+package com.tomer.draw.ui.views
 
 import android.content.Context
 import android.os.Build
@@ -9,6 +9,13 @@ import android.view.MotionEvent
 import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
+import com.tomer.draw.R
+import com.tomer.draw.helpers.DisplaySize
+import com.tomer.draw.helpers.OnDrawingFinished
+import com.tomer.draw.helpers.WindowsManager
+import com.tomer.draw.utils.Log
+import com.tomer.draw.utils.circularRevealHide
+import com.tomer.draw.utils.circularRevealShow
 
 
 /**
@@ -16,9 +23,6 @@ import com.facebook.rebound.SpringSystem
  * Created by Tomer Rosenfeld on 7/28/17.
  */
 class DraggableView(context: Context, override var currentY: Int = 100, override var currentX: Int = 0) : AppCompatImageView(context), FloatingView {
-	override fun removeFromWindow(x: Int, y: Int) {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
 	
 	override fun origHeight(): Int = 150
 	
@@ -50,6 +54,10 @@ class DraggableView(context: Context, override var currentY: Int = 100, override
 		background = ContextCompat.getDrawable(context, R.drawable.round)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 			elevation = 16f
+	}
+	
+	override fun removeFromWindow(x: Int, y: Int) {
+		circularRevealHide(action = Runnable { WindowsManager.getInstance(context).removeView(this) })
 	}
 	
 	override fun addToWindow(x: Int, y: Int) {
@@ -93,15 +101,13 @@ class DraggableView(context: Context, override var currentY: Int = 100, override
 			true
 		})
 		setOnClickListener({
-			if (!drawView.isAttached)
-				WindowsManager.getInstance(context).moveYAttachedView(this, 0, object : WindowsManager.MoveListener {
-					override fun onMoveFinished() {
-						drawView.addToWindow(currentX, currentY)
-					}
-				})
-			else
+			if (!drawView.isAttached) {
+				WindowsManager.getInstance(context).moveYAttachedView(this, 0)
+				drawView.addToWindow(currentX, currentY)
+			} else
 				drawView.removeFromWindow(currentX, currentY)
 		})
 		WindowsManager.getInstance(context).addView(this)
+		circularRevealShow(currentX, currentY, 200f)
 	}
 }
