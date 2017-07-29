@@ -3,8 +3,10 @@ package com.tomer.draw.utils
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -16,6 +18,7 @@ import android.view.ViewAnimationUtils
 import android.widget.Toast
 import com.tomer.draw.R
 import com.tomer.draw.ui.views.QuickDrawView
+import java.util.ArrayList
 
 /**
  * DrawEverywhere

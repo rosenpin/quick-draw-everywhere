@@ -2,6 +2,7 @@ package com.tomer.draw.helpers
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import com.facebook.rebound.SimpleSpringListener
@@ -10,6 +11,7 @@ import com.facebook.rebound.SpringSystem
 import com.tomer.draw.ui.views.FloatingView
 import com.tomer.draw.ui.views.QuickDrawView
 import com.tomer.draw.utils.Log
+import com.tomer.draw.utils.isAndroidNewerThan
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -22,7 +24,8 @@ internal class WindowsManager private constructor(context: Context) {
 	private val viewsMap = ConcurrentHashMap<FloatingView, WindowManager.LayoutParams>()
 	fun addView(view: FloatingView) {
 		val mParams = WindowManager.LayoutParams(view.origWidth(), view.origHeight(),
-				WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+				if ((view as View).context.isAndroidNewerThan(Build.VERSION_CODES.O)) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+				else WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
 				if (view is QuickDrawView)
 					WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
 							WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
