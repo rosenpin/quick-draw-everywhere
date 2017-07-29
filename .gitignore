@@ -28,3 +28,4 @@ proguard.cfg
 build
 app/build
 drawview
+*.jks
