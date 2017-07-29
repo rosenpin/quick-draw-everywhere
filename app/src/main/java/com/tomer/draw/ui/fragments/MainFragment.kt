@@ -70,7 +70,7 @@ class MainFragment : BaseFragment() {
 		val finalFiles: Array<File>? = imageDir.listFiles({ _, filename -> filename.contains(".jpg") })
 		files = finalFiles
 		if (finalFiles != null) {
-			LoadDataTask(context, view).execute(*finalFiles)
+			LoadDataTask().execute(RequiredAsyncData(context, view, finalFiles))
 		}
 		val serviceIntent = Intent(context, HolderService::class.java)
 		view?.findViewById<Switch>(R.id.enable)?.setOnCheckedChangeListener { _, isChecked ->
@@ -82,31 +82,37 @@ class MainFragment : BaseFragment() {
 		context.startService(serviceIntent)
 	}
 	
-	class LoadDataTask(private val context: Context, private val view: View?) : AsyncTask<File?, Void, ArrayList<Item>>() {
+	data class RequiredAsyncData(val context: Context, val view: View?, val files: Array<File>)
+	data class ResultData(val context: Context, val view: View?, val items: ArrayList<Item>?)
+	
+	class LoadDataTask : AsyncTask<RequiredAsyncData, Void, ResultData>() {
 		
-		override fun doInBackground(vararg files: File?): ArrayList<Item> {
+		override fun doInBackground(vararg requiredData: RequiredAsyncData): ResultData {
+			val data = requiredData[0]
 			val items = arrayListOf<com.tomer.draw.ui.imagesgrid.Item>()
-			val width = DisplaySize(context).getWidth(context)
-			for (file in files) {
-				Log.debug("file ", file?.name ?: "no name")
-				items.add(Item().withBitmap(Picasso.with(context).load(file).resize(width / 2, width / 2).centerCrop().get()).withFile(file))
+			val width = DisplaySize(data.context).getWidth(data.context)
+			for (file in data.files) {
+				Log.debug("file ", file.name ?: "no name")
+				items.add(Item().withBitmap(Picasso.with(data.context).load(file).resize(width / 2, width / 2).centerCrop().get()).withFile(file))
 			}
-			return items
+			return ResultData(data.context, data.view, items)
 		}
 		
-		override fun onPostExecute(result: ArrayList<Item>?) {
+		override fun onPostExecute(result: ResultData?) {
 			super.onPostExecute(result)
+			if (result == null)
+				return
 			val fastAdapter = FastItemAdapter<com.tomer.draw.ui.imagesgrid.Item>()
-			view?.findViewById<RecyclerView>(R.id.gallery_list)?.layoutManager = GridLayoutManager(context, 2)
-			view?.findViewById<RecyclerView>(R.id.gallery_list)?.addItemDecoration(GridSpacingItemDecoration(2, 4, false))
-			view?.findViewById<RecyclerView>(R.id.gallery_list)?.adapter = fastAdapter
-			fastAdapter.add(result)
+			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.layoutManager = GridLayoutManager(result.context, 2)
+			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.addItemDecoration(GridSpacingItemDecoration(2, 4, false))
+			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.adapter = fastAdapter
+			fastAdapter.add(result.items)
 			fastAdapter.withSelectable(true)
-			fastAdapter.withOnClickListener { v, adapter, item, position ->
+			fastAdapter.withOnClickListener { _, _, item, _ ->
 				val intent = Intent()
 				intent.action = Intent.ACTION_VIEW
 				intent.setDataAndType(Uri.fromFile(item.file), "image/*")
-				context.startActivity(intent)
+				result.context.startActivity(intent)
 				false
 			}
 		}
