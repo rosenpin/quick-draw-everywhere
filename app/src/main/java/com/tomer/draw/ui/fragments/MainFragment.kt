@@ -1,7 +1,9 @@
 package com.tomer.draw.ui.fragments
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -17,8 +19,10 @@ import com.squareup.picasso.Picasso
 import com.tomer.draw.R
 import com.tomer.draw.helpers.DisplaySize
 import com.tomer.draw.helpers.HolderService
+import com.tomer.draw.ui.activities.MainActivity
 import com.tomer.draw.ui.imagesgrid.GridSpacingItemDecoration
 import com.tomer.draw.ui.imagesgrid.Item
+import com.tomer.draw.utils.DRAWING_SAVED
 import com.tomer.draw.utils.Log
 import java.io.File
 
@@ -28,15 +32,44 @@ import java.io.File
  * Created by Tomer Rosenfeld on 7/29/17.
  */
 class MainFragment : BaseFragment() {
+	var files: Array<File>? = null
+	var inForeground = true
+	val newImageReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			context?.let {
+				if (inForeground) {
+					activity.finish()
+					activity.startActivity(Intent(context, MainActivity::class.java))
+				}
+			}
+		}
+	}
+	
+	override fun onPause() {
+		super.onPause()
+		inForeground = false
+	}
+	
+	override fun onResume() {
+		super.onResume()
+		inForeground = true
+	}
+	
 	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 		return inflater?.inflate(R.layout.fragment_main, container, false)
+	}
+	
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		context.registerReceiver(newImageReceiver, IntentFilter(DRAWING_SAVED))
 	}
 	
 	override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val imageDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), context.getString(R.string.app_name))
-		val files: Array<File> = imageDir.listFiles({ _, filename -> filename.contains(".jpg") })
-		LoadDataTask(context, view).execute(*files)
+		val finalFiles: Array<File> = imageDir.listFiles({ _, filename -> filename.contains(".jpg") })
+		files = finalFiles
+		LoadDataTask(context, view).execute(*finalFiles)
 		val serviceIntent = Intent(context, HolderService::class.java)
 		view?.findViewById<Switch>(R.id.enable)?.setOnCheckedChangeListener { _, isChecked ->
 			if (!isChecked)
@@ -47,7 +80,7 @@ class MainFragment : BaseFragment() {
 		context.startService(serviceIntent)
 	}
 	
-	class LoadDataTask(private val context: Context, private val view: View?) : AsyncTask<File, Void, ArrayList<Item>>() {
+	class LoadDataTask(private val context: Context, private val view: View?) : AsyncTask<File?, Void, ArrayList<Item>>() {
 		
 		override fun doInBackground(vararg files: File?): ArrayList<Item> {
 			val items = arrayListOf<com.tomer.draw.ui.imagesgrid.Item>()

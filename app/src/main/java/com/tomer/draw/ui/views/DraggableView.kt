@@ -1,6 +1,7 @@
 package com.tomer.draw.ui.views
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
@@ -13,6 +14,7 @@ import com.tomer.draw.R
 import com.tomer.draw.helpers.DisplaySize
 import com.tomer.draw.helpers.OnDrawingFinished
 import com.tomer.draw.helpers.WindowsManager
+import com.tomer.draw.utils.DRAWING_SAVED
 import com.tomer.draw.utils.Log
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
@@ -36,6 +38,7 @@ class DraggableView(context: Context, override var currentY: Int = 100, override
 		initStyle()
 		drawView.onDrawingFinished = object : OnDrawingFinished {
 			override fun onDrawingSaved() {
+				context.sendBroadcast(Intent(DRAWING_SAVED))
 				drawView.removeFromWindow()
 			}
 			
