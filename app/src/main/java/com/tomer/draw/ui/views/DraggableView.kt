@@ -1,5 +1,6 @@
 package com.tomer.draw.ui.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -24,7 +25,8 @@ import com.tomer.draw.utils.circularRevealShow
  * DrawEverywhere
  * Created by Tomer Rosenfeld on 7/28/17.
  */
-class DraggableView(context: Context, override var currentY: Int = 100, override var currentX: Int = 0) : AppCompatImageView(context), FloatingView {
+@SuppressLint("ViewConstructor")
+internal class DraggableView(context: Context, override var currentY: Int = 100, override var currentX: Int = 0) : AppCompatImageView(context), FloatingView {
 	
 	override fun origHeight(): Int = 150
 	

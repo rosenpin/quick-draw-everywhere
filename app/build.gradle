@@ -37,9 +37,9 @@ dependencies {
     implementation 'com.mikepenz:fastadapter-commons:2.6.0@aar'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     //When compiling for production, it would be recommended to uncomment the following line:
-    //implementation project(':drawview')
+    implementation project(':drawview')
     //And comment the following line:
-    implementation 'com.byox.drawview:drawview:1.3.1'
+    //implementation 'com.byox.drawview:drawview:1.3.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'

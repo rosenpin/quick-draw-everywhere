@@ -12,7 +12,7 @@ object Log {
 	 * @return tag for the object
 	 */
 	fun getTag(c: Class<*>?): String {
-		return if (c != null) c.simpleName else "com.tomer.alwayson"
+		return if (c != null) c.simpleName else "com.tomer.draw"
 	}
 	
 	/**
@@ -22,7 +22,7 @@ object Log {
 	 */
 	fun getTag(o: Any): String {
 		val c = o.javaClass
-		return if (c != null) c.simpleName else "com.tomer.alwayson"
+		return c.simpleName
 	}
 	
 	private fun log(flag: LOG_FLAGS, var1: Any?, var2: Any?) {

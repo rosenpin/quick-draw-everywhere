@@ -26,12 +26,10 @@ internal class WindowsManager private constructor(context: Context) {
 		val mParams = WindowManager.LayoutParams(view.origWidth(), view.origHeight(),
 				if ((view as View).context.isAndroidNewerThan(Build.VERSION_CODES.O)) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
 				else WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-				if (view is QuickDrawView)
-					WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-							WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+				if (view is QuickDrawView) WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+						WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
 				else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 				PixelFormat.TRANSPARENT)
-		
 		mParams.gravity = view.gravity()
 		mParams.x = view.currentX
 		mParams.y = view.currentY
@@ -54,8 +52,7 @@ internal class WindowsManager private constructor(context: Context) {
 	
 	fun moveYAttachedView(v: FloatingView, y: Int, l: MoveListener? = null) {
 		val springSystem = SpringSystem.create()
-		var spring = springSystem.createSpring()
-		spring = springSystem.createSpring()
+		val spring = springSystem.createSpring()
 		val lp = viewsMap[v] ?: throw IllegalStateException()
 		spring.currentValue = lp.y.toDouble()
 		spring.endValue = y.toDouble()
@@ -74,10 +71,6 @@ internal class WindowsManager private constructor(context: Context) {
 				}
 			}
 		})
-	}
-	
-	interface MoveListener {
-		fun onMoveFinished()
 	}
 	
 	companion object {

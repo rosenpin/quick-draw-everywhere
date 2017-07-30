@@ -11,8 +11,7 @@ class AskPermissionActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		ActivityCompat.requestPermissions(this,
 				arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-						android.Manifest.permission.READ_EXTERNAL_STORAGE),
-				1)
+						android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 	}
 	
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
