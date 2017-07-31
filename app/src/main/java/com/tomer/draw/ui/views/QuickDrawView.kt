@@ -40,11 +40,12 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 	override var currentX: Int = 0
 	override var currentY: Int = 0
 	var isAttached = false
-	override fun removeFromWindow(x: Int, y: Int) {
+	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
 		if (isAttached) {
 			isAttached = false
 			this.circularRevealHide(cx = x + if (x == 0) 50 else -50, cy = y + 50, radius = Math.hypot(DisplaySize(context).getWidth().toDouble(), DisplaySize(context).getHeight().toDouble()).toFloat(), action = Runnable {
 				WindowsManager.getInstance(context).removeView(this)
+				listener?.onWindowRemoved()
 			})
 		}
 	}
@@ -56,13 +57,13 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 			Handler().postDelayed({
 				WindowsManager.getInstance(context).addView(this)
 				Handler().postDelayed({
-					listener?.OnWindowAdded()
+					listener?.onWindowAdded()
 				}, 60)
 			}, 100)
 		}
 	}
 	
-	override fun origHeight(): Int = (DisplaySize(context).getHeight() * 0.8).toInt()
+	override fun origHeight(): Int = (DisplaySize(context).getHeight() * (if (!fullScreen) 0.8f else 1f)).toInt()
 	
 	override fun origWidth(): Int = WindowManager.LayoutParams.MATCH_PARENT
 	
@@ -70,6 +71,7 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 	
 	var accessibleDrawView: DrawView? = null
 	var onDrawingFinished: OnDrawingFinished? = null
+	var fullScreen = false
 	
 	init {
 		val drawView = LayoutInflater.from(context).inflate(R.layout.quick_draw_view, this).draw_view
@@ -78,10 +80,20 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		drawView.setDrawViewBackgroundColor(Color.WHITE)
 		drawView.drawWidth = 8
 		drawView.drawColor = Color.GRAY
-		drawView.cancel.setOnClickListener { drawView.restartDrawing(); onDrawingFinished?.OnDrawingClosed() }
-		drawView.undo.setOnClickListener { undo(drawView) }
-		drawView.save.setOnClickListener { save(drawView) }
-		drawView.eraser.setOnClickListener { v ->
+		cancel.setOnClickListener { drawView.restartDrawing(); onDrawingFinished?.OnDrawingClosed() }
+		undo.setOnClickListener { drawView.undo(); refreshRedoUndoButtons(drawView) }
+		redo.setOnClickListener { drawView.redo(); refreshRedoUndoButtons(drawView) }
+		minimize.setOnClickListener { removeFromWindow() }
+		maximize.setOnClickListener {
+			fullScreen = !fullScreen; removeFromWindow(listener = object : OnWindowStateChangedListener {
+			override fun onWindowAdded() {}
+			override fun onWindowRemoved() {
+				addToWindow()
+			}
+		})
+		}
+		save.setOnClickListener { save(drawView) }
+		eraser.setOnClickListener { v ->
 			drawView.drawingMode =
 					if (drawView.drawingMode == DrawingMode.DRAW) DrawingMode.ERASER
 					else DrawingMode.DRAW
@@ -92,7 +104,33 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 					if (drawView.drawingMode == DrawingMode.DRAW) R.drawable.ic_erase
 					else R.drawable.ic_pencil)
 		}
+		refreshRedoUndoButtons(drawView)
+		drawView.setOnDrawViewListener(object : DrawView.OnDrawViewListener {
+			override fun onStartDrawing() {
+				refreshRedoUndoButtons(drawView)
+			}
+			
+			override fun onEndDrawing() {
+				refreshRedoUndoButtons(drawView)
+			}
+			
+			override fun onClearDrawing() {
+				refreshRedoUndoButtons(drawView)
+			}
+			
+			override fun onRequestText() {
+			}
+			
+			override fun onAllMovesPainted() {
+			}
+			
+		})
 		accessibleDrawView = drawView
+	}
+	
+	private fun refreshRedoUndoButtons(drawView: DrawView) {
+		redo.alpha = if (drawView.canRedo()) 1f else 0.4f
+		undo.alpha = if (drawView.canUndo()) 1f else 0.4f
 	}
 	
 	internal fun setImage(file: File) {

@@ -3,6 +3,7 @@ package com.tomer.draw.utils
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,16 +16,11 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.Toast
 import com.tomer.draw.R
-import com.tomer.draw.ui.views.QuickDrawView
 
 /**
  * DrawEverywhere
  * Created by Tomer Rosenfeld on 7/28/17.
  */
-fun QuickDrawView.isAndroidNewerThanM(): Boolean {
-	return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-}
-
 fun Context.isAndroidNewerThan(version: Int): Boolean = Build.VERSION.SDK_INT >= version
 
 fun Context.hasPermissions(vararg permissions: String): Boolean {
@@ -93,4 +89,11 @@ fun Context.canDrawOverlaysCompat(): Boolean {
 	if (isAndroidNewerThan(Build.VERSION_CODES.M))
 		return Settings.canDrawOverlays(this)
 	return true
+}
+
+fun Context.safeUnregisterReceiver(receiver: BroadcastReceiver) {
+	try {
+		unregisterReceiver(receiver)
+	} catch (ignored: IllegalArgumentException) {
+	}
 }

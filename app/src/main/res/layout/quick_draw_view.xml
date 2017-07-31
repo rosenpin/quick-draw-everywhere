@@ -1,59 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.byox.drawview.views.DrawView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/draw_view"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/AppTheme"
-    app:dv_draw_alpha="255">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/undo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:theme="@style/AppTheme"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_undo" />
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/small_spacing"
+        tools:elevation="@dimen/standard_elevation">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:theme="@style/AppTheme"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_save" />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/cancel"
+            android:layout_width="@dimen/toolbar_icon_radius"
+            android:layout_height="@dimen/toolbar_icon_radius"
+            app:srcCompat="@drawable/ic_close" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:theme="@style/AppTheme"
-        android:tint="@color/white"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_close" />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/maximize"
+            android:layout_width="@dimen/toolbar_icon_radius"
+            android:layout_height="@dimen/toolbar_icon_radius"
+            app:srcCompat="@drawable/ic_maximize" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/eraser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|start"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/minimize"
+            android:layout_width="@dimen/toolbar_icon_radius"
+            android:layout_height="@dimen/toolbar_icon_radius"
+            app:srcCompat="@drawable/ic_minimize" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/undo"
+                android:layout_width="@dimen/toolbar_icon_radius"
+                android:layout_height="@dimen/toolbar_icon_radius"
+                android:layout_marginLeft="@dimen/small_spacing"
+                android:layout_marginStart="@dimen/small_spacing"
+                app:srcCompat="@drawable/ic_undo" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/redo"
+                android:layout_width="@dimen/toolbar_icon_radius"
+                android:layout_height="@dimen/toolbar_icon_radius"
+                android:layout_marginLeft="@dimen/small_spacing"
+                android:layout_marginStart="@dimen/small_spacing"
+                android:rotationY="180"
+                app:srcCompat="@drawable/ic_undo" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/save"
+                android:layout_width="@dimen/toolbar_icon_radius"
+                android:layout_height="@dimen/toolbar_icon_radius"
+                android:layout_marginLeft="@dimen/large_spacing"
+                android:layout_marginStart="@dimen/large_spacing"
+                app:srcCompat="@drawable/ic_save" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.byox.drawview.views.DrawView
+        android:id="@+id/draw_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:theme="@style/AppTheme"
-        android:tint="@color/white"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_erase" />
-</com.byox.drawview.views.DrawView>
+        app:dv_draw_alpha="255">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/eraser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:theme="@style/AppTheme"
+            android:tint="@color/white"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_erase" />
+    </com.byox.drawview.views.DrawView>
+</android.support.constraint.ConstraintLayout>
+

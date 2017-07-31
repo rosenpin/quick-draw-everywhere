@@ -62,7 +62,7 @@ import java.io.File
 			elevation = 16f
 	}
 	
-	override fun removeFromWindow(x: Int, y: Int) {
+	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
 		circularRevealHide(action = Runnable { WindowsManager.getInstance(context).removeView(this) })
 	}
 	
@@ -120,11 +120,11 @@ import java.io.File
 	fun loadBitmap(image: File) {
 		WindowsManager.getInstance(context).moveYAttachedView(this, 0)
 		drawView.addToWindow(currentX, currentY, object : OnWindowStateChangedListener {
-			override fun OnWindowAdded() {
+			override fun onWindowAdded() {
 				drawView.setImage(image)
 			}
 			
-			override fun OnWindowRemoved() {
+			override fun onWindowRemoved() {
 			
 			}
 		})

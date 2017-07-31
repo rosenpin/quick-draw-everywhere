@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.tomer.draw.R
+import kotlinx.android.synthetic.main.gallery_item.view.*
 import java.io.File
 
 
@@ -46,6 +47,6 @@ class Item : AbstractItem<Item, Item.ViewHolder>() {
 	}
 	
 	class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		var image: ImageView = view.findViewById(R.id.image)
+		var image: ImageView = view.image
 	}
 }

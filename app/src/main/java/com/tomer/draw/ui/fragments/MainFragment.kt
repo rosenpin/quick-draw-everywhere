@@ -9,11 +9,9 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import com.squareup.picasso.Picasso
 import com.tomer.draw.R
@@ -24,6 +22,8 @@ import com.tomer.draw.ui.imagesgrid.GridSpacingItemDecoration
 import com.tomer.draw.ui.imagesgrid.Item
 import com.tomer.draw.utils.DRAWING_SAVED
 import com.tomer.draw.utils.Log
+import com.tomer.draw.utils.safeUnregisterReceiver
+import kotlinx.android.synthetic.main.fragment_main.view.*
 import java.io.File
 
 
@@ -74,6 +74,11 @@ class MainFragment : BaseFragment() {
 		context.registerReceiver(newImageReceiver, IntentFilter(DRAWING_SAVED))
 	}
 	
+	override fun onDestroy() {
+		super.onDestroy()
+		context.safeUnregisterReceiver(newImageReceiver)
+	}
+	
 	override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val imageDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), context.getString(R.string.app_name))
@@ -81,7 +86,7 @@ class MainFragment : BaseFragment() {
 		files = finalFiles
 		if (finalFiles != null)
 			LoadDataTask().execute(RequiredAsyncData(context, view, finalFiles))
-		view?.findViewById<Switch>(R.id.enable)?.setOnCheckedChangeListener { _, isChecked ->
+		view?.enable?.setOnCheckedChangeListener { _, isChecked ->
 			if (!isChecked)
 				context.stopService(serviceIntent(context))
 			else
@@ -111,12 +116,12 @@ class MainFragment : BaseFragment() {
 			if (result == null)
 				return
 			val fastAdapter = FastItemAdapter<com.tomer.draw.ui.imagesgrid.Item>()
-			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.layoutManager = GridLayoutManager(result.context, 2)
-			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.addItemDecoration(GridSpacingItemDecoration(2, 4, false))
-			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.adapter = fastAdapter
+			result.view?.gallery_list?.layoutManager = GridLayoutManager(result.context, 2)
+			result.view?.gallery_list?.addItemDecoration(GridSpacingItemDecoration(2, 4, false))
+			result.view?.gallery_list?.adapter = fastAdapter
 			fastAdapter.add(result.items)
 			fastAdapter.withSelectable(true)
-			fastAdapter.withOnLongClickListener { v, adapter, item, position ->
+			fastAdapter.withOnLongClickListener { _, _, item, _ ->
 				HolderService.file = item.file
 				result.context.stopService(serviceIntent(result.context))
 				result.context.startService(serviceIntent(result.context).putExtra("loadBitmap", true))
