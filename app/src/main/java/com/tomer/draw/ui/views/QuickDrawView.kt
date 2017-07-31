@@ -16,14 +16,13 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.FrameLayout
+import com.byox.drawview.enums.BackgroundScale
+import com.byox.drawview.enums.BackgroundType
 import com.byox.drawview.enums.DrawingCapture
 import com.byox.drawview.enums.DrawingMode
 import com.byox.drawview.views.DrawView
 import com.tomer.draw.R
-import com.tomer.draw.helpers.AskPermissionActivity
-import com.tomer.draw.helpers.DisplaySize
-import com.tomer.draw.helpers.OnDrawingFinished
-import com.tomer.draw.helpers.WindowsManager
+import com.tomer.draw.helpers.*
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
 import com.tomer.draw.utils.hasPermissions
@@ -50,11 +49,16 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		}
 	}
 	
-	override fun addToWindow(x: Int, y: Int) {
+	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
 		if (!isAttached) {
 			isAttached = true
 			this.circularRevealShow(x + if (x == 0) 50 else -50, y + 50, Math.hypot(DisplaySize(context).getWidth(context).toDouble(), DisplaySize(context).getHeight(context).toDouble()).toFloat())
-			Handler().postDelayed({ WindowsManager.getInstance(context).addView(this) }, 100)
+			Handler().postDelayed({
+				WindowsManager.getInstance(context).addView(this)
+				Handler().postDelayed({
+					listener?.OnWindowAdded()
+				}, 60)
+			}, 100)
 		}
 	}
 	
@@ -69,8 +73,10 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 	
 	init {
 		val drawView = LayoutInflater.from(context).inflate(R.layout.quick_draw_view, this).draw_view
-		drawView.backgroundColor = Color.WHITE
+		drawView.setBackgroundDrawColor(Color.WHITE)
 		drawView.drawWidth = 8
+		//drawView.backgroundColor = Color.WHITE
+		drawView.setDrawViewBackgroundColor(Color.WHITE)
 		drawView.drawColor = Color.GRAY
 		drawView.cancel.setOnClickListener { drawView.restartDrawing(); onDrawingFinished?.OnDrawingClosed() }
 		drawView.undo.setOnClickListener { undo(drawView) }
@@ -87,6 +93,10 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 					else R.drawable.ic_pencil)
 		}
 		accessibleDrawView = drawView
+	}
+	
+	internal fun setImage(file: File) {
+		accessibleDrawView?.setBackgroundImage(file, BackgroundType.FILE, BackgroundScale.CENTER_INSIDE)
 	}
 	
 	override fun dispatchKeyEvent(event: KeyEvent): Boolean {

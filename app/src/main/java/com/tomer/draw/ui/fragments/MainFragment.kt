@@ -34,6 +34,16 @@ import java.io.File
 class MainFragment : BaseFragment() {
 	var files: Array<File>? = null
 	var inForeground = true
+	
+	companion object {
+		var intent: Intent? = null
+		fun serviceIntent(context: Context): Intent {
+			if (intent == null)
+				intent = Intent(context, HolderService::class.java)
+			return intent!!
+		}
+	}
+	
 	val newImageReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			context?.let {
@@ -71,14 +81,13 @@ class MainFragment : BaseFragment() {
 		files = finalFiles
 		if (finalFiles != null)
 			LoadDataTask().execute(RequiredAsyncData(context, view, finalFiles))
-		val serviceIntent = Intent(context, HolderService::class.java)
 		view?.findViewById<Switch>(R.id.enable)?.setOnCheckedChangeListener { _, isChecked ->
 			if (!isChecked)
-				context.stopService(serviceIntent)
+				context.stopService(serviceIntent(context))
 			else
-				context.startService(serviceIntent)
+				context.startService(serviceIntent(context))
 		}
-		context.startService(serviceIntent)
+		context.startService(serviceIntent(context))
 	}
 	
 	data class RequiredAsyncData(val context: Context, val view: View?, val files: Array<File>)
@@ -107,11 +116,19 @@ class MainFragment : BaseFragment() {
 			result.view?.findViewById<RecyclerView>(R.id.gallery_list)?.adapter = fastAdapter
 			fastAdapter.add(result.items)
 			fastAdapter.withSelectable(true)
+			fastAdapter.withOnLongClickListener { v, adapter, item, position ->
+				HolderService.file = item.file
+				result.context.stopService(serviceIntent(result.context))
+				result.context.startService(serviceIntent(result.context).putExtra("loadBitmap", true))
+				true
+			}
 			fastAdapter.withOnClickListener { _, _, item, _ ->
-				val intent = Intent()
-				intent.action = Intent.ACTION_VIEW
-				intent.setDataAndType(Uri.fromFile(item.file), "image/*")
-				result.context.startActivity(intent)
+				item.file?.let {
+					val intent = Intent()
+					intent.action = Intent.ACTION_VIEW
+					intent.setDataAndType(Uri.fromFile(item.file), "image/*")
+					result.context.startActivity(intent)
+				}
 				false
 			}
 		}

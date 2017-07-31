@@ -25,14 +25,12 @@ object Log {
 		return c.simpleName
 	}
 	
-	private fun log(flag: LOG_FLAGS, var1: Any?, var2: Any?) {
+	private fun log(flag: LOG_FLAGS, var1: Any? = "com.tomer.draw", var2: Any?) {
 		if (!BuildConfig.DEBUG) return
-		if (var1 != null && var2 != null) {
-			when (flag) {
-				LOG_FLAGS.ERROR -> android.util.Log.e(var1.toString(), var2.toString())
-				LOG_FLAGS.DEBUG -> android.util.Log.d(var1.toString(), var2.toString())
-				LOG_FLAGS.INFO -> android.util.Log.i(var1.toString(), var2.toString())
-			}
+		when (flag) {
+			LOG_FLAGS.ERROR -> android.util.Log.e(var1.toString(), var2.toString())
+			LOG_FLAGS.DEBUG -> android.util.Log.d(var1.toString(), var2.toString())
+			LOG_FLAGS.INFO -> android.util.Log.i(var1.toString(), var2.toString())
 		}
 	}
 	

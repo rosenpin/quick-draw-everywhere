@@ -3,6 +3,7 @@ package com.tomer.draw.ui.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
@@ -14,19 +15,20 @@ import com.facebook.rebound.SpringSystem
 import com.tomer.draw.R
 import com.tomer.draw.helpers.DisplaySize
 import com.tomer.draw.helpers.OnDrawingFinished
+import com.tomer.draw.helpers.OnWindowStateChangedListener
 import com.tomer.draw.helpers.WindowsManager
 import com.tomer.draw.utils.DRAWING_SAVED
 import com.tomer.draw.utils.Log
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
+import java.io.File
 
 
 /**
  * DrawEverywhere
  * Created by Tomer Rosenfeld on 7/28/17.
  */
-@SuppressLint("ViewConstructor")
-internal class DraggableView(context: Context, override var currentY: Int = 100, override var currentX: Int = 0) : AppCompatImageView(context), FloatingView {
+@SuppressLint("ViewConstructor") class DraggableView(context: Context, override var currentY: Int = 100, override var currentX: Int = 0) : AppCompatImageView(context), FloatingView {
 	
 	override fun origHeight(): Int = 150
 	
@@ -65,7 +67,7 @@ internal class DraggableView(context: Context, override var currentY: Int = 100,
 		circularRevealHide(action = Runnable { WindowsManager.getInstance(context).removeView(this) })
 	}
 	
-	override fun addToWindow(x: Int, y: Int) {
+	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
 		var mDx: Float = 0.toFloat()
 		var mDy: Float = 0.toFloat()
 		val springSystem = SpringSystem.create()
@@ -114,5 +116,18 @@ internal class DraggableView(context: Context, override var currentY: Int = 100,
 		})
 		WindowsManager.getInstance(context).addView(this)
 		circularRevealShow(currentX, currentY, 200f)
+	}
+	
+	fun loadBitmap(image: File) {
+		WindowsManager.getInstance(context).moveYAttachedView(this, 0)
+		drawView.addToWindow(currentX, currentY, object : OnWindowStateChangedListener {
+			override fun OnWindowAdded() {
+				drawView.setImage(image)
+			}
+			
+			override fun OnWindowRemoved() {
+			
+			}
+		})
 	}
 }
