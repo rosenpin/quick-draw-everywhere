@@ -1,6 +1,6 @@
-package com.tomer.draw.ui.views
+package com.tomer.draw.windows
 
-import com.tomer.draw.helpers.OnWindowStateChangedListener
+import com.tomer.draw.windows.OnWindowStateChangedListener
 
 /**
  * DrawEverywhere

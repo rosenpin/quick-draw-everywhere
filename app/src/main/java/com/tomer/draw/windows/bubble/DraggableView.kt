@@ -1,4 +1,4 @@
-package com.tomer.draw.ui.views
+package com.tomer.draw.windows.bubble
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,14 +12,16 @@ import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
 import com.tomer.draw.R
-import com.tomer.draw.helpers.DisplaySize
-import com.tomer.draw.helpers.OnDrawingFinished
-import com.tomer.draw.helpers.OnWindowStateChangedListener
-import com.tomer.draw.helpers.WindowsManager
+import com.tomer.draw.utils.helpers.DisplaySize
 import com.tomer.draw.utils.DRAWING_SAVED
 import com.tomer.draw.utils.Log
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
+import com.tomer.draw.windows.FloatingView
+import com.tomer.draw.windows.OnWindowStateChangedListener
+import com.tomer.draw.windows.WindowsManager
+import com.tomer.draw.windows.drawings.OnDrawingFinished
+import com.tomer.draw.windows.drawings.QuickDrawView
 import java.io.File
 
 

@@ -1,4 +1,4 @@
-package com.tomer.draw.helpers
+package com.tomer.draw.windows
 
 import android.content.Context
 import android.graphics.PixelFormat
@@ -8,10 +8,10 @@ import android.view.WindowManager
 import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
-import com.tomer.draw.ui.views.FloatingView
-import com.tomer.draw.ui.views.QuickDrawView
+import com.tomer.draw.windows.bubble.MoveListener
 import com.tomer.draw.utils.Log
 import com.tomer.draw.utils.isAndroidNewerThan
+import com.tomer.draw.windows.drawings.QuickDrawView
 import java.util.concurrent.ConcurrentHashMap
 
 /**

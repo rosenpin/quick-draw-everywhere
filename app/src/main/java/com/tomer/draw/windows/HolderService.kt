@@ -1,9 +1,9 @@
-package com.tomer.draw.helpers
+package com.tomer.draw.windows
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.tomer.draw.ui.views.DraggableView
+import com.tomer.draw.windows.bubble.DraggableView
 import java.io.File
 
 

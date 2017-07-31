@@ -1,4 +1,4 @@
-package com.tomer.draw.ui.imagesgrid
+package com.tomer.draw.gallery
 
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView

@@ -1,4 +1,4 @@
-package com.tomer.draw.ui.views
+package com.tomer.draw.windows.drawings
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -23,10 +23,13 @@ import com.byox.drawview.enums.DrawingCapture
 import com.byox.drawview.enums.DrawingMode
 import com.byox.drawview.views.DrawView
 import com.tomer.draw.R
-import com.tomer.draw.helpers.*
+import com.tomer.draw.utils.helpers.*
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
 import com.tomer.draw.utils.hasPermissions
+import com.tomer.draw.windows.FloatingView
+import com.tomer.draw.windows.OnWindowStateChangedListener
+import com.tomer.draw.windows.WindowsManager
 import kotlinx.android.synthetic.main.quick_draw_view.view.*
 import java.io.File
 import java.io.FileOutputStream

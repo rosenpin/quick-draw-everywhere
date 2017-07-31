@@ -1,13 +1,12 @@
-package com.tomer.draw.ui.activities
+package com.tomer.draw.gallery
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.tomer.draw.R
-import com.tomer.draw.ui.fragments.BaseFragment
-import com.tomer.draw.ui.fragments.FragmentStateChangeListener
-import com.tomer.draw.ui.fragments.IntroFragment
-import com.tomer.draw.ui.fragments.MainFragment
+import com.tomer.draw.utils.helpers.base.BaseFragment
+import com.tomer.draw.utils.helpers.base.FragmentStateChangeListener
+import com.tomer.draw.utils.helpers.IntroFragment
 
 
 class MainActivity : AppCompatActivity(), FragmentStateChangeListener {

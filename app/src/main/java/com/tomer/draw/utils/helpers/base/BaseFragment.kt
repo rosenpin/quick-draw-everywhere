@@ -1,4 +1,4 @@
-package com.tomer.draw.ui.fragments
+package com.tomer.draw.utils.helpers.base
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

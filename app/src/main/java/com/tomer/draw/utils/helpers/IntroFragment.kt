@@ -1,4 +1,4 @@
-package com.tomer.draw.ui.fragments
+package com.tomer.draw.utils.helpers
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import com.tomer.draw.utils.askDrawOverPermission
 import com.tomer.draw.utils.askPermissionNoCallBack
 import com.tomer.draw.utils.canDrawOverlaysCompat
 import com.tomer.draw.utils.hasPermissions
+import com.tomer.draw.utils.helpers.base.BaseFragment
 import kotlinx.android.synthetic.main.intro.view.*
 
 /**

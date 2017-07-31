@@ -1,4 +1,4 @@
-package com.tomer.draw.ui.fragments
+package com.tomer.draw.utils.helpers.base
 
 /**
  * DrawEverywhere

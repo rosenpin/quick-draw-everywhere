@@ -1,4 +1,4 @@
-package com.tomer.draw.helpers
+package com.tomer.draw.utils.helpers
 
 import android.content.Context
 import android.graphics.Point
