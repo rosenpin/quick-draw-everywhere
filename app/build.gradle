@@ -36,7 +36,6 @@ dependencies {
     }
     implementation 'com.mikepenz:fastadapter-commons:2.6.0@aar'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation "com.android.support:support-dynamic-animation:26.0.0"
     //When compiling for production, it would be recommended to uncomment the following line:
     implementation project(':drawview')
     //And comment the following line:

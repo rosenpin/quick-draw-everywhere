@@ -98,7 +98,7 @@ class MainFragment : BaseFragment() {
 		override fun doInBackground(vararg requiredData: RequiredAsyncData): ResultData {
 			val data = requiredData[0]
 			val items = arrayListOf<com.tomer.draw.ui.imagesgrid.Item>()
-			val width = DisplaySize(data.context).getWidth(data.context)
+			val width = DisplaySize(data.context).getWidth()
 			for (file in data.files) {
 				Log.debug("file ", file.name ?: "no name")
 				items.add(Item().withBitmap(Picasso.with(data.context).load(file).resize(width / 2, width / 2).centerCrop().get()).withFile(file))

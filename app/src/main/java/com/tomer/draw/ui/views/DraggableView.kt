@@ -3,7 +3,6 @@ package com.tomer.draw.ui.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
@@ -72,7 +71,7 @@ import java.io.File
 		var mDy: Float = 0.toFloat()
 		val springSystem = SpringSystem.create()
 		var spring = springSystem.createSpring()
-		val screenWidth = DisplaySize(context).getWidth(context)
+		val screenWidth = DisplaySize(context).getWidth()
 		var origX: Float = -1f
 		setOnTouchListener({ _, event ->
 			Log.debug(this, "Touching the view")
