@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.view.ViewCompat
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -74,6 +75,7 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 	var fullScreen = false
 	
 	init {
+		ViewCompat.setElevation(toolbar, context?.resources?.getDimension(R.dimen.qda_design_appbar_elevation) ?: 6f)
 		val drawView = LayoutInflater.from(context).inflate(R.layout.quick_draw_view, this).draw_view
 		drawView.setBackgroundDrawColor(Color.WHITE)
 		drawView.backgroundColor = Color.WHITE

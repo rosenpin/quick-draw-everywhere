@@ -11,8 +11,7 @@
         android:background="@color/colorPrimary"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/small_spacing"
-        tools:elevation="@dimen/standard_elevation">
+        android:padding="@dimen/small_spacing">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/cancel"

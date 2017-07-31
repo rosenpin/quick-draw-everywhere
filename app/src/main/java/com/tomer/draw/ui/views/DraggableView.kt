@@ -59,7 +59,7 @@ import java.io.File
 		setImageResource(R.drawable.ic_pencil)
 		background = ContextCompat.getDrawable(context, R.drawable.round)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-			elevation = 16f
+			elevation = context.resources.getDimension(R.dimen.design_bottom_sheet_modal_elevation)
 	}
 	
 	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
