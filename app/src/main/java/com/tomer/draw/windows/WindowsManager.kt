@@ -8,9 +8,9 @@ import android.view.WindowManager
 import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
-import com.tomer.draw.windows.bubble.MoveListener
 import com.tomer.draw.utils.Log
 import com.tomer.draw.utils.isAndroidNewerThan
+import com.tomer.draw.windows.bubble.MoveListener
 import com.tomer.draw.windows.drawings.QuickDrawView
 import java.util.concurrent.ConcurrentHashMap
 

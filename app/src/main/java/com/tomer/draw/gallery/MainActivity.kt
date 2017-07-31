@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.tomer.draw.R
+import com.tomer.draw.utils.helpers.IntroFragment
 import com.tomer.draw.utils.helpers.base.BaseFragment
 import com.tomer.draw.utils.helpers.base.FragmentStateChangeListener
-import com.tomer.draw.utils.helpers.IntroFragment
 
 
 class MainActivity : AppCompatActivity(), FragmentStateChangeListener {

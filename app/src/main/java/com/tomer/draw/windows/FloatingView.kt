@@ -1,7 +1,5 @@
 package com.tomer.draw.windows
 
-import com.tomer.draw.windows.OnWindowStateChangedListener
-
 /**
  * DrawEverywhere
  * Created by Tomer Rosenfeld on 7/28/17.
