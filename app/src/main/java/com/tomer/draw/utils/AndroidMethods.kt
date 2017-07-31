@@ -44,6 +44,7 @@ fun View.circularRevealHide(cx: Int = width / 2, cy: Int = height / 2, radius: F
 				action?.run()
 			}
 		})
+		anim.interpolator = FastOutSlowInInterpolator()
 		anim.start()
 	}
 }
@@ -58,7 +59,6 @@ fun View.circularRevealShow(cx: Int = width / 2, cy: Int = height / 2, radius: F
 						radius
 			val anim = ViewAnimationUtils.createCircularReveal(this, cx, cy, 0f, finalRadius)
 			anim.interpolator = FastOutSlowInInterpolator()
-			anim.duration = 500
 			anim.start()
 		}
 	}

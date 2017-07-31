@@ -12,11 +12,11 @@ import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
 import com.tomer.draw.R
-import com.tomer.draw.utils.helpers.DisplaySize
 import com.tomer.draw.utils.DRAWING_SAVED
 import com.tomer.draw.utils.Log
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
+import com.tomer.draw.utils.helpers.DisplaySize
 import com.tomer.draw.windows.FloatingView
 import com.tomer.draw.windows.OnWindowStateChangedListener
 import com.tomer.draw.windows.WindowsManager
@@ -44,11 +44,11 @@ import java.io.File
 		drawView.onDrawingFinished = object : OnDrawingFinished {
 			override fun onDrawingSaved() {
 				context.sendBroadcast(Intent(DRAWING_SAVED))
-				drawView.removeFromWindow()
+				drawView.removeFromWindow(x = currentX, y = currentY)
 			}
 			
 			override fun OnDrawingClosed() {
-				drawView.removeFromWindow()
+				drawView.removeFromWindow(x = currentX, y = currentY)
 			}
 			
 			override fun OnDrawingSaveFailed() {
@@ -61,7 +61,7 @@ import java.io.File
 		setImageResource(R.drawable.ic_pencil)
 		background = ContextCompat.getDrawable(context, R.drawable.round)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-			elevation = context.resources.getDimension(R.dimen.design_bottom_sheet_modal_elevation)
+			elevation = context.resources.getDimension(R.dimen.qda_design_appbar_elevation)
 	}
 	
 	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
@@ -110,7 +110,7 @@ import java.io.File
 		})
 		setOnClickListener({
 			if (!drawView.isAttached) {
-				WindowsManager.getInstance(context).moveYAttachedView(this, 0)
+				WindowsManager.getInstance(context).moveYAttachedView(this, y = 0)
 				drawView.addToWindow(currentX, currentY)
 			} else
 				drawView.removeFromWindow(currentX, currentY)

@@ -23,10 +23,10 @@ import com.byox.drawview.enums.DrawingCapture
 import com.byox.drawview.enums.DrawingMode
 import com.byox.drawview.views.DrawView
 import com.tomer.draw.R
-import com.tomer.draw.utils.helpers.*
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
 import com.tomer.draw.utils.hasPermissions
+import com.tomer.draw.utils.helpers.DisplaySize
 import com.tomer.draw.windows.FloatingView
 import com.tomer.draw.windows.OnWindowStateChangedListener
 import com.tomer.draw.windows.WindowsManager
@@ -58,16 +58,14 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		if (!isAttached) {
 			isAttached = true
 			this.circularRevealShow(x + if (x == 0) 50 else -50, y + 50, Math.hypot(DisplaySize(context).getWidth().toDouble(), DisplaySize(context).getHeight().toDouble()).toFloat())
+			WindowsManager.getInstance(context).addView(this)
 			Handler().postDelayed({
-				WindowsManager.getInstance(context).addView(this)
-				Handler().postDelayed({
-					listener?.onWindowAdded()
-				}, 60)
+				listener?.onWindowAdded()
 			}, 100)
 		}
 	}
 	
-	override fun origHeight(): Int = (DisplaySize(context).getHeight() * (if (!fullScreen) 0.8f else 1f)).toInt()
+	override fun origHeight(): Int = (DisplaySize(context).getHeight() * (if (!fullScreen) 0.8f else 0.95f)).toInt()
 	
 	override fun origWidth(): Int = WindowManager.LayoutParams.MATCH_PARENT
 	
@@ -78,7 +76,6 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 	var fullScreen = false
 	
 	init {
-		ViewCompat.setElevation(toolbar, context?.resources?.getDimension(R.dimen.qda_design_appbar_elevation) ?: 6f)
 		val drawView = LayoutInflater.from(context).inflate(R.layout.quick_draw_view, this).draw_view
 		drawView.setBackgroundDrawColor(Color.WHITE)
 		drawView.backgroundColor = Color.WHITE
@@ -130,6 +127,7 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 			}
 			
 		})
+		ViewCompat.setElevation(toolbar, context?.resources?.getDimension(R.dimen.qda_design_appbar_elevation) ?: 6f)
 		accessibleDrawView = drawView
 	}
 	
