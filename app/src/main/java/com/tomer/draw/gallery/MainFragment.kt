@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tomer.draw.R
 import com.tomer.draw.utils.DRAWING_SAVED
+import com.tomer.draw.utils.PREFS_KEYS
 import com.tomer.draw.utils.helpers.base.BaseFragment
 import com.tomer.draw.utils.safeUnregisterReceiver
 import com.tomer.draw.windows.HolderService
@@ -67,19 +69,27 @@ class MainFragment : BaseFragment() {
 		context.safeUnregisterReceiver(newImageReceiver)
 	}
 	
-	override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val files = getFiles(context)
 		files?.let {
 			LoadDataTask().execute(RequiredAsyncData(context, view, files))
 		}
-		view?.enable?.setOnCheckedChangeListener { _, isChecked ->
-			if (!isChecked)
-				context.stopService(serviceIntent(context))
-			else
-				context.startService(serviceIntent(context))
+		val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+		val enabled = prefs.getBoolean(PREFS_KEYS.ENABLED.key, true)
+		view.enable.isChecked = enabled
+		handleCheckChange(enabled)
+		view.enable.setOnCheckedChangeListener { _, isChecked ->
+			handleCheckChange(isChecked)
+			prefs.edit().putBoolean(PREFS_KEYS.ENABLED.key, isChecked).apply()
 		}
-		context.startService(serviceIntent(context))
 	}
 	
+	private fun handleCheckChange(isChecked: Boolean) {
+		if (!isChecked) {
+			context.stopService(serviceIntent(context))
+		} else {
+			context.startService(serviceIntent(context))
+		}
+	}
 }
