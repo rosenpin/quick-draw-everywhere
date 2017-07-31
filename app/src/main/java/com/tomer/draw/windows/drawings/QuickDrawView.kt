@@ -40,14 +40,18 @@ import java.util.*
  * DrawEverywhere
  * Created by Tomer Rosenfeld on 7/27/17.
  */
-class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
+class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 	override var currentX: Int = 0
 	override var currentY: Int = 0
 	var isAttached = false
+	var accessibleDrawView: DrawView? = null
+	var onDrawingFinished: OnDrawingFinished? = null
+	private var fullScreen = false
+	private val displaySize = DisplaySize(context)
 	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
 		if (isAttached) {
 			isAttached = false
-			this.circularRevealHide(cx = x + if (x == 0) 50 else -50, cy = y + 50, radius = Math.hypot(DisplaySize(context).getWidth().toDouble(), DisplaySize(context).getHeight().toDouble()).toFloat(), action = Runnable {
+			this.circularRevealHide(cx = x + if (x == 0) 50 else -50, cy = y + 50, radius = Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat(), action = Runnable {
 				WindowsManager.getInstance(context).removeView(this)
 				listener?.onWindowRemoved()
 			})
@@ -57,7 +61,7 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
 		if (!isAttached) {
 			isAttached = true
-			this.circularRevealShow(x + if (x == 0) 50 else -50, y + 50, Math.hypot(DisplaySize(context).getWidth().toDouble(), DisplaySize(context).getHeight().toDouble()).toFloat())
+			this.circularRevealShow(x + if (x == 0) 50 else -50, y + 50, Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat())
 			WindowsManager.getInstance(context).addView(this)
 			Handler().postDelayed({
 				listener?.onWindowAdded()
@@ -65,15 +69,11 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		}
 	}
 	
-	override fun origHeight(): Int = (DisplaySize(context).getHeight() * (if (!fullScreen) 0.8f else 0.95f)).toInt()
+	override fun origHeight(): Int = (displaySize.getHeight() * (if (!fullScreen) 0.8f else 0.95f)).toInt()
 	
 	override fun origWidth(): Int = WindowManager.LayoutParams.MATCH_PARENT
 	
 	override fun gravity() = Gravity.CENTER
-	
-	var accessibleDrawView: DrawView? = null
-	var onDrawingFinished: OnDrawingFinished? = null
-	var fullScreen = false
 	
 	init {
 		val drawView = LayoutInflater.from(context).inflate(R.layout.quick_draw_view, this).draw_view
@@ -83,16 +83,17 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 		drawView.drawWidth = 8
 		drawView.drawColor = Color.GRAY
 		cancel.setOnClickListener { drawView.restartDrawing(); onDrawingFinished?.OnDrawingClosed() }
+		minimize.setOnClickListener { onDrawingFinished?.OnDrawingClosed() }
 		undo.setOnClickListener { drawView.undo(); refreshRedoUndoButtons(drawView) }
 		redo.setOnClickListener { drawView.redo(); refreshRedoUndoButtons(drawView) }
-		minimize.setOnClickListener { removeFromWindow() }
 		maximize.setOnClickListener {
-			fullScreen = !fullScreen; removeFromWindow(listener = object : OnWindowStateChangedListener {
-			override fun onWindowAdded() {}
-			override fun onWindowRemoved() {
-				addToWindow()
-			}
-		})
+			fullScreen = !fullScreen
+			removeFromWindow(x = displaySize.getWidth() / 2, listener = object : OnWindowStateChangedListener {
+				override fun onWindowAdded() {}
+				override fun onWindowRemoved() {
+					addToWindow(x = displaySize.getWidth() / 2)
+				}
+			})
 		}
 		save.setOnClickListener { save(drawView) }
 		eraser.setOnClickListener { v ->
@@ -127,7 +128,7 @@ class QuickDrawView(context: Context?) : FrameLayout(context), FloatingView {
 			}
 			
 		})
-		ViewCompat.setElevation(toolbar, context?.resources?.getDimension(R.dimen.qda_design_appbar_elevation) ?: 6f)
+		ViewCompat.setElevation(toolbar, context.resources?.getDimension(R.dimen.qda_design_appbar_elevation) ?: 6f)
 		accessibleDrawView = drawView
 	}
 	
