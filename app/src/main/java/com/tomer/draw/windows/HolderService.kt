@@ -37,5 +37,6 @@ class HolderService : Service() {
 	override fun onDestroy() {
 		super.onDestroy()
 		draggable.removeFromWindow()
+		file = null
 	}
 }

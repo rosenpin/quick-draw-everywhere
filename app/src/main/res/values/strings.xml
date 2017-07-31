@@ -6,4 +6,6 @@
     <string name="write_storage">Write Storage</string>
     <string name="error_1_open_draw_over">Couldn\'t ask for draw over permission, you have to do it manually. Sorry.</string>
     <string name="enable_the_service">Enable the service</string>
+    <string name="drawing_drawing_saved">New drawing saved</string>
+    <string name="drawing_view_drawing">Click here to view the drawing</string>
 </resources>

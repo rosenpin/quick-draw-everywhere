@@ -205,8 +205,8 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 		val pendingIntent = PendingIntent.getActivity(context, 100, intent, PendingIntent.FLAG_ONE_SHOT)
 		
 		val notification = Notification.Builder(context)
-				/*.setContentTitle(context.resources.getString(R.string.drawing_drawing_saved))
-				.setContentText(context.resources.getString(R.string.drawing_view_drawing))*/
+				.setContentTitle(context.resources.getString(R.string.drawing_drawing_saved))
+				.setContentText(context.resources.getString(R.string.drawing_view_drawing))
 				.setStyle(Notification.BigPictureStyle().bigPicture(drawing))
 				.setSmallIcon(R.drawable.ic_screenshot)
 				.setContentIntent(pendingIntent).build()

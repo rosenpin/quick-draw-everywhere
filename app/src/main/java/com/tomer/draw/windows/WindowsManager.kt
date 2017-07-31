@@ -26,9 +26,10 @@ internal class WindowsManager private constructor(context: Context) {
 		val mParams = WindowManager.LayoutParams(view.origWidth(), view.origHeight(),
 				if ((view as View).context.isAndroidNewerThan(Build.VERSION_CODES.O)) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
 				else WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-				if (view is QuickDrawView) WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-						WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
-				else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+				(if (view is QuickDrawView) WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+				else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) or
+						WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or
+						WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
 				PixelFormat.TRANSPARENT)
 		mParams.gravity = view.gravity()
 		mParams.x = view.currentX
