@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
@@ -38,6 +39,7 @@ import java.io.File
 	override fun gravity(): Int = Gravity.LEFT or Gravity.TOP
 	
 	private val drawView = QuickDrawView(context = context)
+	private val animationsHandler = Handler()
 	
 	init {
 		initStyle()
@@ -79,6 +81,7 @@ import java.io.File
 			Log.debug(this, "Touching the view")
 			val action = event.action
 			if (action == MotionEvent.ACTION_DOWN) {
+				animate().alpha(1f).setDuration(300).start()
 				spring.destroy()
 				origX = event.x
 				mDx = currentX - event.rawX
@@ -88,6 +91,7 @@ import java.io.File
 				currentY = (event.rawY + mDy).toInt()
 				WindowsManager.getInstance(context).updateView(this@DraggableView)
 			} else if (action == MotionEvent.ACTION_UP) {
+				fadeOut()
 				val finalPos = if (screenWidth - event.rawX < event.rawX) screenWidth else 0
 				if (origX == event.x)
 					this.callOnClick()
@@ -117,6 +121,12 @@ import java.io.File
 		})
 		WindowsManager.getInstance(context).addView(this)
 		circularRevealShow(currentX, currentY, 200f)
+		fadeOut()
+	}
+	
+	fun fadeOut(){
+		animationsHandler.removeCallbacksAndMessages(null)
+		animationsHandler.postDelayed({ animate().alpha(0.6f).setDuration(1000).start() }, 3000)
 	}
 	
 	fun loadBitmap(image: File) {
