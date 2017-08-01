@@ -66,11 +66,11 @@ import java.io.File
 			elevation = context.resources.getDimension(R.dimen.qda_design_appbar_elevation)
 	}
 	
-	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
+	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowRemoved: Runnable?) {
 		circularRevealHide(action = Runnable { WindowsManager.getInstance(context).removeView(this) })
 	}
 	
-	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
+	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowAdded: Runnable?) {
 		var mDx: Float = 0.toFloat()
 		var mDy: Float = 0.toFloat()
 		val springSystem = SpringSystem.create()
@@ -100,7 +100,6 @@ import java.io.File
 				spring.endValue = finalPos.toDouble()
 				spring.addListener(object : SimpleSpringListener() {
 					override fun onSpringUpdate(spring: Spring) {
-						Log.debug("spring value is ", spring.currentValue)
 						currentX = spring.currentValue.toInt()
 						WindowsManager.getInstance(context).updateView(this@DraggableView)
 						if (finalPos == 0 && finalPos > currentX)
@@ -115,7 +114,14 @@ import java.io.File
 		setOnClickListener({
 			if (!drawView.isAttached) {
 				WindowsManager.getInstance(context).moveYAttachedView(this, y = 0)
-				drawView.addToWindow(currentX, currentY)
+				drawView.addToWindow(currentX, currentY, object : OnWindowStateChangedListener {
+					override fun onWindowAdded() {}
+					
+					override fun onWindowRemoved() {
+						fadeOut()
+					}
+					
+				})
 			} else
 				drawView.removeFromWindow(currentX, currentY)
 		})
@@ -124,9 +130,9 @@ import java.io.File
 		fadeOut()
 	}
 	
-	fun fadeOut(){
+	fun fadeOut() {
 		animationsHandler.removeCallbacksAndMessages(null)
-		animationsHandler.postDelayed({ animate().alpha(0.6f).setDuration(1000).start() }, 3000)
+		animationsHandler.postDelayed({ if (!drawView.isAttached) animate().alpha(0.6f).setDuration(1000).start() }, 3000)
 	}
 	
 	fun loadBitmap(image: File) {

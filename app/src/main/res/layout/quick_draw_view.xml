@@ -71,18 +71,49 @@
         android:theme="@style/AppTheme"
         app:dv_draw_alpha="255">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/eraser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:theme="@style/AppTheme"
-            android:tint="@color/white"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_erase" />
+        <com.michaldrabik.tapbarmenulib.TapBarMenu
+            android:id="@+id/tapBarMenu"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="24dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/color_pick"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_color"
+                app:tint="@color/white" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/eraser"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_erase"
+                app:tint="@color/white" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="56dp"
+                android:layout_height="match_parent" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/add_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_text"
+                app:tint="@color/white" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/gallery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_gallery"
+                app:tint="@color/white" />
+        </com.michaldrabik.tapbarmenulib.TapBarMenu>
     </com.byox.drawview.views.DrawView>
 </android.support.constraint.ConstraintLayout>
 

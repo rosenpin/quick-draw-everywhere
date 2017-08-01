@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="TapBarMenu">
+    <attr name="tbm_backgroundColor" format="color" />
+    <attr name="tbm_buttonSize" format="dimension" />
+    <attr name="tbm_buttonMarginRight" format="dimension" />
+    <attr name="tbm_buttonMarginLeft" format="dimension" />
+    <attr name="tbm_iconClosed" format="reference" />
+    <attr name="tbm_iconOpened" format="reference" />
+    <attr name="tbm_buttonPosition" format="enum">
+      <enum name="left" value="0" />
+      <enum name="center" value="1" />
+      <enum name="right" value="2" />
+    </attr>
+    <attr name="tbm_menuAnchor" format="enum">
+      <enum name="bottom" value="3" />
+      <enum name="top" value="4" />
+    </attr>
+    <attr name="tbm_showItems" format="boolean" />
+  </declare-styleable>
+</resources>

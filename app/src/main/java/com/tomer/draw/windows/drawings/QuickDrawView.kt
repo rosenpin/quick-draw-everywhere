@@ -10,8 +10,8 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewCompat
+import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -23,6 +23,7 @@ import com.byox.drawview.enums.DrawingCapture
 import com.byox.drawview.enums.DrawingMode
 import com.byox.drawview.views.DrawView
 import com.tomer.draw.R
+import com.tomer.draw.gallery.MainActivity
 import com.tomer.draw.utils.circularRevealHide
 import com.tomer.draw.utils.circularRevealShow
 import com.tomer.draw.utils.hasPermissions
@@ -35,6 +36,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * DrawEverywhere
@@ -48,24 +50,40 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 	var onDrawingFinished: OnDrawingFinished? = null
 	private var fullScreen = false
 	private val displaySize = DisplaySize(context)
-	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
+	private val listeners = ArrayList<OnWindowStateChangedListener>()
+	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowRemoved: Runnable?) {
+		if (listener != null)
+			listeners.add(listener)
 		if (isAttached) {
 			isAttached = false
 			this.circularRevealHide(cx = x + if (x == 0) 50 else -50, cy = y + 50, radius = Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat(), action = Runnable {
 				WindowsManager.getInstance(context).removeView(this)
-				listener?.onWindowRemoved()
+				onWindowRemoved?.run()
+				triggerListeners(false)
 			})
 		}
 	}
 	
-	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?) {
+	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowAdded: Runnable?) {
+		if (listener != null)
+			listeners.add(listener)
 		if (!isAttached) {
 			isAttached = true
 			this.circularRevealShow(x + if (x == 0) 50 else -50, y + 50, Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat())
 			WindowsManager.getInstance(context).addView(this)
 			Handler().postDelayed({
-				listener?.onWindowAdded()
+				onWindowAdded?.run()
+				triggerListeners(true)
 			}, 100)
+		}
+	}
+	
+	fun triggerListeners(added: Boolean) {
+		for (l in listeners) {
+			if (added)
+				l.onWindowAdded()
+			else if (!added)
+				l.onWindowRemoved()
 		}
 	}
 	
@@ -88,11 +106,8 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 		redo.setOnClickListener { drawView.redo(); refreshRedoUndoButtons(drawView) }
 		maximize.setOnClickListener {
 			fullScreen = !fullScreen
-			removeFromWindow(x = displaySize.getWidth() / 2, listener = object : OnWindowStateChangedListener {
-				override fun onWindowAdded() {}
-				override fun onWindowRemoved() {
-					addToWindow(x = displaySize.getWidth() / 2)
-				}
+			removeFromWindow(x = displaySize.getWidth() / 2, onWindowRemoved = Runnable {
+				addToWindow(x = displaySize.getWidth() / 2)
 			})
 		}
 		save.setOnClickListener { save(drawView) }
@@ -103,10 +118,22 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 			drawView.drawWidth =
 					if (drawView.drawingMode == DrawingMode.DRAW) 8
 					else 28
-			(v as FloatingActionButton).setImageResource(
+			(v as AppCompatImageView).setImageResource(
 					if (drawView.drawingMode == DrawingMode.DRAW) R.drawable.ic_erase
 					else R.drawable.ic_pencil)
 		}
+		gallery.setOnClickListener {
+			removeFromWindow(displaySize.getWidth() / 2, 0, object : OnWindowStateChangedListener {
+				override fun onWindowAdded() {}
+				
+				override fun onWindowRemoved() {
+					context.startActivity(Intent(context, MainActivity::class.java)); }
+				
+			})
+		}
+		tapBarMenu.setOnClickListener({
+			tapBarMenu.toggle()
+		})
 		refreshRedoUndoButtons(drawView)
 		drawView.setOnDrawViewListener(object : DrawView.OnDrawViewListener {
 			override fun onStartDrawing() {
@@ -129,6 +156,7 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 			
 		})
 		ViewCompat.setElevation(toolbar, context.resources?.getDimension(R.dimen.qda_design_appbar_elevation) ?: 6f)
+		ViewCompat.setElevation(tapBarMenu, context.resources?.getDimension(R.dimen.standard_elevation) ?: 8f)
 		accessibleDrawView = drawView
 	}
 	

@@ -31,7 +31,7 @@ class LoadDataTask(val onLoadListener: OnLoadListener) : AsyncTask<RequiredAsync
 		val items = arrayListOf<Item>()
 		val width = DisplaySize(data.context).getWidth()
 		for (file in data.files) {
-			Log.debug("file ", file.name ?: "no name")
+			Log.debug("Found file", file.name ?: "no name")
 			items.add(Item().withBitmap(Picasso.with(data.context).load(file).resize(width / 2, width / 2).centerCrop().get()).withFile(file))
 		}
 		return ResultData(data.context, items)

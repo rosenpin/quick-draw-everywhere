@@ -59,7 +59,6 @@ internal class WindowsManager private constructor(context: Context) {
 		spring.endValue = y.toDouble()
 		spring.addListener(object : SimpleSpringListener() {
 			override fun onSpringUpdate(spring: Spring) {
-				Log.debug("spring value is ", spring.currentValue)
 				getInstance((v as View).context).updateView(v, y = spring.currentValue.toInt())
 				if (y == 0 && y > lp.y) {
 					spring.destroy()
