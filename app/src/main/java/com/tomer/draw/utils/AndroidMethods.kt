@@ -2,6 +2,7 @@ package com.tomer.draw.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,7 +16,6 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.widget.Toast
 import com.tomer.draw.R
 
@@ -50,23 +50,24 @@ fun View.circularRevealHide(cx: Int = width / 2, cy: Int = height / 2, radius: F
 		anim.interpolator = FastOutSlowInInterpolator()
 		anim.start()
 	} else {
-		val alphaAnimation = AlphaAnimation(1.0f, 0.0f)
-		alphaAnimation.duration = 300
-		alphaAnimation.repeatCount = 1
-		alphaAnimation.fillAfter = false
-		alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
-			override fun onAnimationRepeat(animation: Animation?) {
+		val fadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, .1f)
+		fadeOut.duration = 500
+		fadeOut.addListener(object : Animator.AnimatorListener {
+			override fun onAnimationRepeat(animation: Animator?) {
 			}
 			
-			override fun onAnimationEnd(animation: Animation?) {
+			override fun onAnimationEnd(animation: Animator?) {
 				action?.run()
 			}
 			
-			override fun onAnimationStart(animation: Animation?) {
+			override fun onAnimationCancel(animation: Animator?) {
+			}
+			
+			override fun onAnimationStart(animation: Animator?) {
 			}
 			
 		})
-		startAnimation(alphaAnimation)
+		fadeOut.start()
 	}
 }
 
@@ -82,11 +83,9 @@ fun View.circularRevealShow(cx: Int = width / 2, cy: Int = height / 2, radius: F
 			anim.interpolator = FastOutSlowInInterpolator()
 			anim.start()
 		} else {
-			val alphaAnimation = AlphaAnimation(0.0f, 1.0f)
-			alphaAnimation.duration = 300
-			alphaAnimation.repeatCount = 1
-			alphaAnimation.fillAfter = false
-			startAnimation(alphaAnimation)
+			val fadeIn = ObjectAnimator.ofFloat(this, "alpha", 0f, 1f)
+			fadeIn.duration = 300
+			fadeIn.start()
 		}
 	}
 }
