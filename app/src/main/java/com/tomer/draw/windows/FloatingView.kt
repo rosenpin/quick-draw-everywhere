@@ -7,9 +7,18 @@ package com.tomer.draw.windows
 interface FloatingView {
 	var currentX: Int
 	var currentY: Int
+	val listeners: ArrayList<OnWindowStateChangedListener>
 	fun origHeight(): Int
 	fun origWidth(): Int
 	fun gravity(): Int
-	fun addToWindow(x: Int = 0, y: Int = 0, listener: OnWindowStateChangedListener? = null, onWindowAdded: Runnable? = null)
-	fun removeFromWindow(x: Int = 0, y: Int = 0, listener: OnWindowStateChangedListener? = null, onWindowRemoved: Runnable? = null)
+	fun addToWindow(x: Int = 0, y: Int = 0, onWindowAdded: Runnable? = null, listener: OnWindowStateChangedListener? = null){
+		addListener(listener)
+	}
+	fun removeFromWindow(x: Int = 0, y: Int = 0, onWindowRemoved: Runnable? = null, listener: OnWindowStateChangedListener? = null){
+		addListener(listener)
+	}
+	fun addListener(listener: OnWindowStateChangedListener?) {
+		if (listener != null)
+			listeners.add(listener)
+	}
 }

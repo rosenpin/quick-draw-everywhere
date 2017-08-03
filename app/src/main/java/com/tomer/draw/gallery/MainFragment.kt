@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.afollestad.materialdialogs.MaterialDialog
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import com.tomer.draw.R
 import com.tomer.draw.utils.DRAWING_SAVED
@@ -26,6 +27,17 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
  * Created by Tomer Rosenfeld on 7/29/17.
  */
 class MainFragment : BaseFragment(), OnLoadListener {
+	var inForeground = true
+	
+	companion object {
+		var intent: Intent? = null
+		fun serviceIntent(context: Context): Intent {
+			if (intent == null)
+				intent = Intent(context, HolderService::class.java)
+			return intent!!
+		}
+	}
+	
 	override fun onContentLoaded(result: ResultData?) {
 		if (result == null)
 			return
@@ -36,8 +48,21 @@ class MainFragment : BaseFragment(), OnLoadListener {
 		fastAdapter.add(result.items)
 		fastAdapter.withSelectable(true)
 		fastAdapter.withOnLongClickListener { _, _, item, _ ->
-			HolderService.file = item.file
-			result.context.startService(MainFragment.serviceIntent(result.context).putExtra("loadBitmap", true))
+			MaterialDialog.Builder(context)
+					.items(R.array.image_options)
+					.itemsCallback({ _, _, which, _ ->
+						when (which) {
+							0 -> {
+								HolderService.file = item.file
+								result.context.startService(MainFragment.serviceIntent(result.context).putExtra("loadBitmap", true))
+							}
+							1 -> {
+								item.file?.canonicalFile?.delete()
+								reloadList()
+							}
+						}
+					})
+					.show()
 			true
 		}
 		fastAdapter.withOnClickListener { _, _, item, _ ->
@@ -51,25 +76,9 @@ class MainFragment : BaseFragment(), OnLoadListener {
 		}
 	}
 	
-	var inForeground = true
-	
-	companion object {
-		var intent: Intent? = null
-		fun serviceIntent(context: Context): Intent {
-			if (intent == null)
-				intent = Intent(context, HolderService::class.java)
-			return intent!!
-		}
-	}
-	
 	val newImageReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
-			context?.let {
-				if (inForeground) {
-					activity.finish()
-					activity.startActivity(Intent(context, MainActivity::class.java))
-				}
-			}
+			reloadList()
 		}
 	}
 	
@@ -101,7 +110,7 @@ class MainFragment : BaseFragment(), OnLoadListener {
 		super.onViewCreated(view, savedInstanceState)
 		val files = getFiles(context)
 		files?.let {
-			LoadDataTask(this).execute(RequiredAsyncData(context, files))
+			reloadList()
 		}
 		val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 		val enabled = prefs.getBoolean(PREFS_KEYS.ENABLED.key, true)
@@ -111,6 +120,10 @@ class MainFragment : BaseFragment(), OnLoadListener {
 			handleCheckChange(isChecked)
 			prefs.edit().putBoolean(PREFS_KEYS.ENABLED.key, isChecked).apply()
 		}
+	}
+	
+	private fun reloadList() {
+		LoadDataTask(this).execute(RequiredAsyncData(context, getFiles(context)))
 	}
 	
 	private fun handleCheckChange(isChecked: Boolean) {

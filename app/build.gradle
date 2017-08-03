@@ -61,6 +61,7 @@ dependencies {
     }
     implementation 'com.mikepenz:fastadapter-commons:2.6.0@aar'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.afollestad.material-dialogs:core:0.9.4.5'
     implementation project(':tapbarmenu')
     //When compiling for production, it would be recommended to uncomment the following line:
     implementation project(':drawview')

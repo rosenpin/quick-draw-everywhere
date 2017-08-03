@@ -43,17 +43,16 @@ import kotlin.collections.ArrayList
  * Created by Tomer Rosenfeld on 7/27/17.
  */
 class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
+	override val listeners: ArrayList<OnWindowStateChangedListener> = ArrayList()
+	private val displaySize = DisplaySize(context)
 	override var currentX: Int = 0
 	override var currentY: Int = 0
+	private var fullScreen = false
 	var isAttached = false
 	var accessibleDrawView: DrawView? = null
 	var onDrawingFinished: OnDrawingFinished? = null
-	private var fullScreen = false
-	private val displaySize = DisplaySize(context)
-	private val listeners = ArrayList<OnWindowStateChangedListener>()
-	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowRemoved: Runnable?) {
-		if (listener != null)
-			listeners.add(listener)
+	
+	override fun removeFromWindow(x: Int, y: Int, onWindowRemoved: Runnable?, listener: OnWindowStateChangedListener?) {
 		if (isAttached) {
 			isAttached = false
 			this.circularRevealHide(cx = x + if (x == 0) 50 else -50, cy = y + 50, radius = Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat(), action = Runnable {
@@ -64,9 +63,7 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 		}
 	}
 	
-	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowAdded: Runnable?) {
-		if (listener != null)
-			listeners.add(listener)
+	override fun addToWindow(x: Int, y: Int, onWindowAdded: Runnable?, listener: OnWindowStateChangedListener?) {
 		if (!isAttached) {
 			isAttached = true
 			this.circularRevealShow(x + if (x == 0) 50 else -50, y + 50, Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat())
@@ -123,13 +120,7 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 					else R.drawable.ic_pencil)
 		}
 		gallery.setOnClickListener {
-			removeFromWindow(displaySize.getWidth() / 2, 0, object : OnWindowStateChangedListener {
-				override fun onWindowAdded() {}
-				
-				override fun onWindowRemoved() {
-					context.startActivity(Intent(context, MainActivity::class.java)); }
-				
-			})
+			removeFromWindow(displaySize.getWidth() / 2, 0, Runnable { context.startActivity(Intent(context, MainActivity::class.java)) })
 		}
 		tapBarMenu.setOnClickListener({
 			tapBarMenu.toggle()

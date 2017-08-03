@@ -38,6 +38,7 @@ import java.io.File
 	
 	override fun gravity(): Int = Gravity.LEFT or Gravity.TOP
 	
+	override val listeners: ArrayList<OnWindowStateChangedListener> = ArrayList()
 	private val drawView = QuickDrawView(context = context)
 	private val animationsHandler = Handler()
 	
@@ -66,11 +67,11 @@ import java.io.File
 			elevation = context.resources.getDimension(R.dimen.qda_design_appbar_elevation)
 	}
 	
-	override fun removeFromWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowRemoved: Runnable?) {
+	override fun removeFromWindow(x: Int, y: Int, onWindowRemoved: Runnable?, listener: OnWindowStateChangedListener?) {
 		circularRevealHide(action = Runnable { WindowsManager.getInstance(context).removeView(this) })
 	}
 	
-	override fun addToWindow(x: Int, y: Int, listener: OnWindowStateChangedListener?, onWindowAdded: Runnable?) {
+	override fun addToWindow(x: Int, y: Int, onWindowAdded: Runnable?, listener: OnWindowStateChangedListener?) {
 		var mDx: Float = 0.toFloat()
 		var mDy: Float = 0.toFloat()
 		val springSystem = SpringSystem.create()
@@ -114,14 +115,12 @@ import java.io.File
 		setOnClickListener({
 			if (!drawView.isAttached) {
 				WindowsManager.getInstance(context).moveYAttachedView(this, y = 0)
-				drawView.addToWindow(currentX, currentY, object : OnWindowStateChangedListener {
-					override fun onWindowAdded() {}
-					
+				drawView.addListener(object : OnWindowStateChangedListener {
 					override fun onWindowRemoved() {
 						fadeOut()
 					}
-					
 				})
+				drawView.addToWindow(currentX, currentY)
 			} else
 				drawView.removeFromWindow(currentX, currentY)
 		})
@@ -137,14 +136,6 @@ import java.io.File
 	
 	fun loadBitmap(image: File) {
 		WindowsManager.getInstance(context).moveYAttachedView(this, 0)
-		drawView.addToWindow(currentX, currentY, object : OnWindowStateChangedListener {
-			override fun onWindowAdded() {
-				drawView.setImage(image)
-			}
-			
-			override fun onWindowRemoved() {
-			
-			}
-		})
+		drawView.addToWindow(currentX, currentY, Runnable { drawView.setImage(image) })
 	}
 }
