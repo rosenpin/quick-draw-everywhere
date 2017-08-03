@@ -75,8 +75,8 @@
             android:id="@+id/tapBarMenu"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="24dp">
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/color_pick"

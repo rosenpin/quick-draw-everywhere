@@ -7,11 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
-import android.support.v4.graphics.drawable.IconCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
@@ -58,6 +56,8 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 		if (isAttached) {
 			isAttached = false
 			this.circularRevealHide(cx = x + if (x == 0) 50 else -50, cy = y + 50, radius = Math.hypot(displaySize.getWidth().toDouble(), displaySize.getHeight().toDouble()).toFloat(), action = Runnable {
+				if (tapBarMenu != null)
+					tapBarMenu.close()
 				WindowsManager.getInstance(context).removeView(this)
 				onWindowRemoved?.run()
 				triggerListeners(false)
@@ -127,6 +127,7 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 		tapBarMenu.setOnClickListener({
 			tapBarMenu.toggle()
 		})
+		tapBarMenu.moveDownOnClose = false
 		refreshRedoUndoButtons(drawView)
 		drawView.setOnDrawViewListener(object : DrawView.OnDrawViewListener {
 			override fun onStartDrawing() {
