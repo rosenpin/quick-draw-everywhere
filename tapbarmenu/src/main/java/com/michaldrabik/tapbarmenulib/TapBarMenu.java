@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -22,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
-
-import com.wnafee.vector.compat.ResourcesCompat;
 
 /**
  * TapBar Menu Layout.
@@ -84,6 +83,7 @@ public class TapBarMenu extends LinearLayout {
 		setGravity(Gravity.CENTER);
 		setupAnimators();
 		setupPaint();
+		showIcons(false);
 	}
 	
 	private void setupAttributes(AttributeSet attrs) {
@@ -94,14 +94,15 @@ public class TapBarMenu extends LinearLayout {
 			iconOpenedDrawable = typedArray.getDrawable(R.styleable.TapBarMenu_tbm_iconOpened);
 		} else {
 			iconOpenedDrawable = ResourcesCompat
-					.getDrawable(getContext(), R.drawable.icon_animated);
+					.getDrawable(getContext().getResources(), R.drawable.tbm_icon_animated, null);
 		}
 		
 		if (typedArray.hasValue(R.styleable.TapBarMenu_tbm_iconClosed)) {
 			iconClosedDrawable = typedArray.getDrawable(R.styleable.TapBarMenu_tbm_iconClosed);
 		} else {
 			iconClosedDrawable = ResourcesCompat
-					.getDrawable(getContext(), R.drawable.icon_close_animated);
+					.getDrawable(getContext().getResources(), R.drawable.tbm_icon_close_animated,
+							null);
 		}
 		
 		backgroundColor = typedArray.getColor(R.styleable.TapBarMenu_tbm_backgroundColor,
@@ -174,7 +175,9 @@ public class TapBarMenu extends LinearLayout {
 		paint.setAntiAlias(true);
 	}
 	
-	public void onResume() {
+	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
 		setupMenuItems();
 	}
 	
@@ -209,7 +212,7 @@ public class TapBarMenu extends LinearLayout {
 		}
 		ViewGroup parentView = (ViewGroup) TapBarMenu.this.getParent();
 		this.animate()
-				.y(parentView.getBottom() - height * 2 + 24)
+				.y(menuAnchor == MENU_ANCHOR_BOTTOM ? parentView.getBottom() - height : 0)
 				.setDuration(animationDuration)
 				.setInterpolator(DECELERATE_INTERPOLATOR)
 				.start();
@@ -532,7 +535,13 @@ public class TapBarMenu extends LinearLayout {
 		return true;
 	}
 	
-	public void onDestroy() {
+	@Override
+	protected void onDetachedFromWindow() {
+		onDestroy();
+		super.onDetachedFromWindow();
+	}
+	
+	private void onDestroy() {
 		iconOpenedDrawable = null;
 		iconClosedDrawable = null;
 		for (int i = 0; i < 5; i++) {

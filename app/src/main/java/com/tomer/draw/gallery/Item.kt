@@ -1,6 +1,7 @@
 package com.tomer.draw.gallery
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
@@ -31,7 +32,7 @@ class Item : AbstractItem<Item, Item.ViewHolder>() {
 		this.file = file
 		return this
 	}
-	
+
 	override fun bindView(viewHolder: ViewHolder, payloads: List<Any>) {
 		super.bindView(viewHolder, payloads)
 		viewHolder.image.setImageBitmap(bitmapImage)

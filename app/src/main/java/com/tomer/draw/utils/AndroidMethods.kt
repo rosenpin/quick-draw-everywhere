@@ -14,8 +14,11 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.view.View
 import android.view.ViewAnimationUtils
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.Toast
 import com.tomer.draw.R
+
 
 /**
  * DrawEverywhere
@@ -46,6 +49,24 @@ fun View.circularRevealHide(cx: Int = width / 2, cy: Int = height / 2, radius: F
 		})
 		anim.interpolator = FastOutSlowInInterpolator()
 		anim.start()
+	} else {
+		val alphaAnimation = AlphaAnimation(1.0f, 0.0f)
+		alphaAnimation.duration = 300
+		alphaAnimation.repeatCount = 1
+		alphaAnimation.fillAfter = false
+		alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
+			override fun onAnimationRepeat(animation: Animation?) {
+			}
+			
+			override fun onAnimationEnd(animation: Animation?) {
+				action?.run()
+			}
+			
+			override fun onAnimationStart(animation: Animation?) {
+			}
+			
+		})
+		startAnimation(alphaAnimation)
 	}
 }
 
@@ -60,6 +81,12 @@ fun View.circularRevealShow(cx: Int = width / 2, cy: Int = height / 2, radius: F
 			val anim = ViewAnimationUtils.createCircularReveal(this, cx, cy, 0f, finalRadius)
 			anim.interpolator = FastOutSlowInInterpolator()
 			anim.start()
+		} else {
+			val alphaAnimation = AlphaAnimation(0.0f, 1.0f)
+			alphaAnimation.duration = 300
+			alphaAnimation.repeatCount = 1
+			alphaAnimation.fillAfter = false
+			startAnimation(alphaAnimation)
 		}
 	}
 }

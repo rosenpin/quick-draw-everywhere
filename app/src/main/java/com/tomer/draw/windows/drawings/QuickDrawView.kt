@@ -7,9 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
+import android.support.v4.graphics.drawable.IconCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
@@ -194,8 +196,8 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 			val result = image.createNewFile()
 			val fileOutputStream = FileOutputStream(image)
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-			showNotification(bitmap, image)
 			onDrawingFinished?.onDrawingSaved()
+			showNotification(bitmap, image)
 		} catch (e: IOException) {
 			e.printStackTrace()
 			onDrawingFinished?.OnDrawingSaveFailed()
@@ -227,7 +229,7 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 				.setContentTitle(context.resources.getString(R.string.drawing_drawing_saved))
 				.setContentText(context.resources.getString(R.string.drawing_view_drawing))
 				.setStyle(Notification.BigPictureStyle().bigPicture(drawing))
-				.setSmallIcon(R.drawable.ic_screenshot)
+				.setSmallIcon(R.drawable.ic_gallery_compat)
 				.setContentIntent(pendingIntent).build()
 		
 		notification.flags = notification.flags or Notification.FLAG_AUTO_CANCEL

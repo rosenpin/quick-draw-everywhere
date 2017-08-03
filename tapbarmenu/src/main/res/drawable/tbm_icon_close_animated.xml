@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:drawable="@drawable/tbm_icon"
+    tools:targetApi="lollipop">
+
+    <target
+        android:name="stripe1"
+        android:animation="@animator/tbm_stripe1_close" />
+
+    <target
+        android:name="stripe2"
+        android:animation="@animator/tbm_stripe2_close" />
+
+    <target
+        android:name="stripe3"
+        android:animation="@animator/tbm_stripe3_close" />
+
+    <target
+        android:name="icon"
+        android:animation="@animator/tbm_rotation" />
+
+</animated-vector>
