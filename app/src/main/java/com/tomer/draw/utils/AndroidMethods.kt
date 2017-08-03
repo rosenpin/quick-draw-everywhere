@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.view.View
 import android.view.ViewAnimationUtils
-import android.view.animation.AlphaAnimation
 import android.widget.Toast
 import com.tomer.draw.R
 
@@ -51,7 +50,7 @@ fun View.circularRevealHide(cx: Int = width / 2, cy: Int = height / 2, radius: F
 		anim.start()
 	} else {
 		val fadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, .1f)
-		fadeOut.duration = 500
+		fadeOut.duration = 300
 		fadeOut.addListener(object : Animator.AnimatorListener {
 			override fun onAnimationRepeat(animation: Animator?) {
 			}
