@@ -27,6 +27,5 @@ proguard.cfg
 .gradle
 build
 app/build
-drawview
 *.jks
 app/release
