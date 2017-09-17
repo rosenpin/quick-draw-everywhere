@@ -101,8 +101,8 @@ class QuickDrawView(context: Context) : FrameLayout(context), FloatingView {
 		drawView.drawColor = Color.GRAY
 		cancel.setOnClickListener { drawView.restartDrawing(); onDrawingFinished?.OnDrawingClosed() }
 		minimize.setOnClickListener { onDrawingFinished?.OnDrawingClosed() }
-		undo.setOnClickListener { drawView.undo(); refreshRedoUndoButtons(drawView) }
-		redo.setOnClickListener { drawView.redo(); refreshRedoUndoButtons(drawView) }
+		undo.setOnClickListener { if (drawView.canUndo()) drawView.undo(); refreshRedoUndoButtons(drawView) }
+		redo.setOnClickListener { if (drawView.canRedo()) drawView.redo(); refreshRedoUndoButtons(drawView) }
 		maximize.setOnClickListener {
 			fullScreen = !fullScreen
 			removeFromWindow(x = displaySize.getWidth() / 2, onWindowRemoved = Runnable {
