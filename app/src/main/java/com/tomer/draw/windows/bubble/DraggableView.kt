@@ -79,7 +79,6 @@ import java.io.File
 		val screenWidth = DisplaySize(context).getWidth()
 		var origX: Float = -1f
 		setOnTouchListener({ _, event ->
-			Log.debug(this, "Touching the view")
 			val action = event.action
 			if (action == MotionEvent.ACTION_DOWN) {
 				animate().alpha(1f).setDuration(300).start()
