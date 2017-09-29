@@ -80,34 +80,38 @@ import java.io.File
 		var origX: Float = -1f
 		setOnTouchListener({ _, event ->
 			val action = event.action
-			if (action == MotionEvent.ACTION_DOWN) {
-				animate().alpha(1f).setDuration(300).start()
-				spring.destroy()
-				origX = event.x
-				mDx = currentX - event.rawX
-				mDy = currentY - event.rawY
-			} else if (action == MotionEvent.ACTION_MOVE) {
-				currentX = (event.rawX + mDx).toInt()
-				currentY = (event.rawY + mDy).toInt()
-				WindowsManager.getInstance(context).updateView(this@DraggableView)
-			} else if (action == MotionEvent.ACTION_UP) {
-				fadeOut()
-				val finalPos = if (screenWidth - event.rawX < event.rawX) screenWidth else 0
-				if (origX == event.x)
-					this.callOnClick()
-				spring = springSystem.createSpring()
-				spring.currentValue = currentX.toDouble()
-				spring.endValue = finalPos.toDouble()
-				spring.addListener(object : SimpleSpringListener() {
-					override fun onSpringUpdate(spring: Spring) {
-						currentX = spring.currentValue.toInt()
-						WindowsManager.getInstance(context).updateView(this@DraggableView)
-						if (finalPos == 0 && finalPos > currentX)
-							spring.destroy()
-						else if (finalPos != 0 && finalPos < currentX)
-							spring.destroy()
-					}
-				})
+			when (action) {
+				MotionEvent.ACTION_DOWN -> {
+					animate().alpha(1f).setDuration(300).start()
+					spring.destroy()
+					origX = event.x
+					mDx = currentX - event.rawX
+					mDy = currentY - event.rawY
+				}
+				MotionEvent.ACTION_MOVE -> {
+					currentX = (event.rawX + mDx).toInt()
+					currentY = (event.rawY + mDy).toInt()
+					WindowsManager.getInstance(context).updateView(this@DraggableView)
+				}
+				MotionEvent.ACTION_UP -> {
+					fadeOut()
+					val finalPos = if (screenWidth - event.rawX < event.rawX) screenWidth else 0
+					if (origX == event.x)
+						this.callOnClick()
+					spring = springSystem.createSpring()
+					spring.currentValue = currentX.toDouble()
+					spring.endValue = finalPos.toDouble()
+					spring.addListener(object : SimpleSpringListener() {
+						override fun onSpringUpdate(spring: Spring) {
+							currentX = spring.currentValue.toInt()
+							WindowsManager.getInstance(context).updateView(this@DraggableView)
+							if (finalPos == 0 && finalPos > currentX)
+								spring.destroy()
+							else if (finalPos != 0 && finalPos < currentX)
+								spring.destroy()
+						}
+					})
+				}
 			}
 			true
 		})

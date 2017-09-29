@@ -7,7 +7,7 @@ Quickly draw anywhere on your screen
 
 | Gallery screen | Drawing floating screen |
 |:-:|:-:|
-| ![Gallery](art/gallery.png) | ![Draw](art/draw.png)
+| ![Gallery](metadata/en-US/images/phoneScreenshots/gallery.png) | ![Draw](metadata/en-US/images/phoneScreenshots/draw.png)
 
 ## Licensing
 QuickDrawEverywhere is licensed under the [GNU v3 Public License.](LICENSE)

@@ -1,0 +1,3 @@
+Quickly draw anywhere on your screen using a floating bubble and a simple, yet powerful drawing canvas.
+
+Save your drawings and share them.
